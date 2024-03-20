@@ -1,0 +1,1 @@
+{"version":3,"file":"statusFuelRouter.js","sourceRoot":"","sources":["../../src/routers/statusFuelRouter.ts"],"names":[],"mappings":"AAAA,OAAO,OAAO,MAAM,SAAS,CAAC;AAC9B,OAAO,EAAE,8BAA8B,EAAE,MAAM,qCAAqC,CAAC;AAErF,MAAM,MAAM,GAAG,OAAO,CAAC,MAAM,CAAC,EAAC,WAAW,EAAE,IAAI,EAAC,CAAC,CAAC;AAEnD,MAAM,CAAC,GAAG,CAAC,kBAAkB,EAAE,8BAA8B,CAAC,CAAA;AAE9D,eAAe,MAAM,CAAC"}
