@@ -3,10 +3,13 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import mongodb from 'mongodb';
 import statusFuelRouter from './routers/statusFuelRouter.js';
+import cookieParser from 'cookie-parser'; 
+import bodyParser from 'body-parser';
 
 const app = express();
+app.use(bodyParser.json())
+app.use(cookieParser())
 app.use('/api/v1', statusFuelRouter);
-
 const { MongoClient, ServerApiVersion } = mongodb;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 dotenv.config();
