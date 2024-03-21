@@ -5,6 +5,7 @@ import statusFuelRouter from './routers/statusFuelRouter.js';
 import cookieParser from 'cookie-parser'; 
 import bodyParser from 'body-parser';
 import registerRouter from './routers/register.js'
+import loginRouter from './routers/login.js'
 import mongoose from 'mongoose';
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use('/auth', registerRouter);
+app.use('/auth', loginRouter);
 app.use('/api/v1', statusFuelRouter);
 
 dotenv.config();
