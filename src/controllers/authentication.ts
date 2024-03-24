@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { createUser, getUserByEmail } from '../models/user.js';
 import { authentication, random } from '../helpers/index.js';
+
 export const registerController = async (req: Request, res: Response) => {
   try {
-    const {email, password, username} = req.body;
+    const {email, password, username, role} = req.body;
     if(!email || !password || !username) {
       return res.status(400).send("some values were missed");
     }
@@ -11,13 +12,14 @@ export const registerController = async (req: Request, res: Response) => {
     const existUser = await getUserByEmail(email);
 
     if (existUser) {
-      return res.sendStatus(403);
+      return res.status(403).json({message: "User with this email already exist"});
     }
 
     const salt = random()
     const user = await createUser({
       email, 
-      username, 
+      username,
+      role,
       authentication: {
         salt,
         password: authentication(salt, password)

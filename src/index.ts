@@ -1,11 +1,11 @@
 import express, { RequestHandler, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import mongodb from 'mongodb';
 import statusFuelRouter from './routers/statusFuelRouter.js';
 import cookieParser from 'cookie-parser'; 
 import bodyParser from 'body-parser';
 import registerRouter from './routers/register.js'
 import loginRouter from './routers/login.js'
+import checkRouter from './routers/checkRouter.js'
 import mongoose from 'mongoose';
 
 const app = express();
@@ -15,6 +15,7 @@ app.use(cookieParser())
 app.use('/auth', registerRouter);
 app.use('/auth', loginRouter);
 app.use('/api/v1', statusFuelRouter);
+app.use('/records', checkRouter);
 
 dotenv.config();
 
