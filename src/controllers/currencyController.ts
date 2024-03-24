@@ -7,8 +7,8 @@ const client = new currencyApi(process.env.CURRENCY_API_KEY)
     const {fromCurrency, toCurrency} = req.query as {fromCurrency: string, toCurrency: string}
 
     const response = await client.latest({
-      base_currency:fromCurrency,
-      currencies: toCurrency
+      base_currency:fromCurrency || 'USD',
+      currencies: toCurrency || 'EUR'
     })
     res.status(200).json({data: response})
   } catch (error) {
