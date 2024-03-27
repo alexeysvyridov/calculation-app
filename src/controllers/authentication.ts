@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { createUser, getUserByEmail } from '../models/user.js';
 import { authentication, random } from '../helpers/index.js';
 
-export const registerController = async (req: Request, res: Response) => {
+
+export const registerController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {email, password, username, role} = req.body;
     if(!email || !password || !username) {
@@ -25,11 +26,11 @@ export const registerController = async (req: Request, res: Response) => {
         password: authentication(salt, password)
       }
    });
-
-   return res.status(200).json(user).end();
+   req.body.user = user;
+   next()
   } catch (error) {
     console.log(error);
-    res.sendStatus(400);
+    res.status(400).send({error});
   }
 }
 
