@@ -33,6 +33,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.2",
+    "nodemailer": "^6.9.13",
     "puppeteer": "^22.5.0",
     "tradingeconomics": "^2.4.0",
     "ts-node": "^10.9.2"
