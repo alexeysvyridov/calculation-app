@@ -3,9 +3,10 @@ import { Permissions } from "../models/permissions.js";
 
 const checkPermission = (permission: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { identity } = req as any;
+    const { authenticationToken } = req as any;
 
-    const userRole = identity ? identity?.role : "anonymous";
+    const userRole = authenticationToken ? authenticationToken?.role : "anonymous";
+
     const userPermissions = new Permissions().getPermissionsByRoleName(userRole);
     if (userPermissions?.includes(permission)) {
       return next();

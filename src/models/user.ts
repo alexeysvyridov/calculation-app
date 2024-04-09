@@ -4,11 +4,11 @@ const UserSchema = new Schema({
   username: {type: String, required: true},
   email: {type: String, required: true},
   role: {type: String, required: true},
-  authentication: {
-    password: {type: String, required: true, select: false},
-    salt: { type: String, select: false},
-    sessionToken: { type: String, select: false}
-  }
+  // authentication: {
+  //   password: {type: String, required: true, select: false},
+  //   salt: { type: String, select: false},
+  //   sessionToken: { type: String, select: false}
+  // }
 })
 
 
