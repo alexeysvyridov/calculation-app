@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { createUser, getUserByEmail } from '../models/user.js';
-import { createSecretToken } from '../helpers/index.js';
+import { authentication, createRefreshSecretToken, createSecretToken, random } from '../helpers/index.js';
 
 
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
@@ -16,16 +16,16 @@ export const registerController = async (req: Request, res: Response, next: Next
       return res.status(403).json({message: "User with this email already exist"});
     }
 
-    // const salt = random()
+    const salt = random()
 
     const user = await createUser({
       email, 
       username,
       role,
-      // authentication: {
-      //   salt,
-      //   password: authentication(salt, password)
-      // }
+      authentication: {
+        salt,
+        password: authentication(salt, password)
+      }
    });
    req.body.user = user;
    next()
@@ -43,18 +43,21 @@ export const loginController = async (req: Request, res: Response) => {
       return res.status(400).json({message: 'No password or email!'})
     }
 
-    const user = await getUserByEmail(email);
-
+    const user = await getUserByEmail(email).select('+authentication.salt +authentication.password');
     if(!user) {
       return res.status(400).json({message: 'wrong email!'})
     }
 
-
-
+    const expectedHashed = authentication(user.authentication.salt, password);
+    if (expectedHashed !== user.authentication.password) {
+      res.status(400).send({message: 'Incorrect password, please try again'})
+    }
 
     const token = createSecretToken({ id: user._id?.toString(), role: user.role });
-    res.cookie('Authorization', token, {domain: 'localhost', path: '/'});
+    const refreshToken = createRefreshSecretToken({ id: user._id?.toString(), role: user.role })
 
+    res.cookie('Authorization', token, {domain: 'localhost', path: '/'});
+    res.cookie('refreshToken', refreshToken, {domain: 'localhost', path: '/'})
     return res.status(200).header('Authorization', `Bearer ${token}`).json(user).end()
 
   } catch (error) {
