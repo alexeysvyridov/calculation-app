@@ -7,6 +7,7 @@ import registerRouter from './routers/register.js'
 import loginRouter from './routers/login.js'
 import checkRouter from './routers/checkRouter.js'
 import checkCurrencyExchange from './routers/checkCurrencyExchange.js'
+import refreshToken from './routers/refreshToken.js'
 import mongoose from 'mongoose';
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use('/auth', registerRouter);
 app.use('/auth', loginRouter);
+app.use('/auth', refreshToken);
 app.use('/api/v1', statusFuelRouter);
 app.use('/api/v1', checkRouter);
 app.use('/api/v1', checkCurrencyExchange);
