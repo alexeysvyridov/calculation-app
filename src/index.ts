@@ -16,10 +16,10 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use('/auth', registerRouter);
 app.use('/auth', loginRouter);
+app.use('/auth', refreshToken);
 app.use('/api/v1', statusFuelRouter);
 app.use('/api/v1', checkRouter);
 app.use('/api/v1', checkCurrencyExchange);
-app.use('/api/v1', refreshToken);
 
 dotenv.config();
 
