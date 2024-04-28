@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { createUser, getUserByEmail } from '../models/user.js';
-import { authentication, random } from '../helpers/index.js';
+import { authentication, createRefreshSecretToken, createSecretToken, random } from '../helpers/index.js';
 
-export const registerController = async (req: Request, res: Response) => {
+
+export const registerController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {email, password, username, role} = req.body;
     if(!email || !password || !username) {
@@ -16,6 +17,7 @@ export const registerController = async (req: Request, res: Response) => {
     }
 
     const salt = random()
+
     const user = await createUser({
       email, 
       username,
@@ -25,11 +27,11 @@ export const registerController = async (req: Request, res: Response) => {
         password: authentication(salt, password)
       }
    });
-
-   return res.status(200).json(user).end();
+   req.body.user = user;
+   next()
   } catch (error) {
     console.log(error);
-    res.sendStatus(400);
+    res.status(400).send({error});
   }
 }
 
@@ -42,24 +44,20 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     const user = await getUserByEmail(email).select('+authentication.salt +authentication.password');
-
     if(!user) {
       return res.status(400).json({message: 'wrong email!'})
     }
 
-    const expectedHash = authentication(user.authentication.salt, password);
-
-    if(user.authentication.password !== expectedHash) {
-      return res.status(403).json({message: 'wrong password!'})
+    const expectedHashed = authentication(user.authentication.salt, password);
+    if (expectedHashed !== user.authentication.password) {
+      res.status(400).send({message: 'Incorrect password, please try again'})
     }
 
-    const salt = random();
-    user.authentication.sessionToken = authentication(salt, user._id.toString())
-    await user.save();
+    const token = createSecretToken({ id: user._id?.toString(), role: user.role });
+    const refreshToken = createRefreshSecretToken({ id: user._id?.toString(), role: user.role })
 
-    res.cookie('AUTH', user.authentication.sessionToken, {domain: 'localhost', path: '/'});
-
-    return res.status(200).json(user).end()
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
+    return res.status(200).header('Authorization', `Bearer ${token}`).json(user).end()
 
   } catch (error) {
     res.status(400).send(error)
