@@ -25,3 +25,6 @@ export const verifyToken = (token: string) => {
 export const createRefreshSecretToken = (payload: Payload) => {
   return jwt.sign(payload, process.env.SECRET_REFRESH_TOKEN, {expiresIn: day})
 }
+export const verifyRefreshToken = (token: string) => {
+  return jwt.verify(token, process.env.SECRET_REFRESH_TOKEN)
+}
