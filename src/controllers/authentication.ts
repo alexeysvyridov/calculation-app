@@ -56,7 +56,6 @@ export const loginController = async (req: Request, res: Response) => {
     const token = createSecretToken({ id: user._id?.toString(), role: user.role });
     const refreshToken = createRefreshSecretToken({ id: user._id?.toString(), role: user.role })
 
-    res.cookie('Authorization', token, {domain: 'localhost', path: '/'});
     res.cookie('refreshToken', refreshToken, {domain: 'localhost', path: '/'})
     return res.status(200).header('Authorization', `Bearer ${token}`).json(user).end()
 

@@ -11,20 +11,17 @@ export const authentication = (salt: string, password: string) => {
   return crypto.createHmac('sha256', [salt, password].join('/')).update(process.env.SECRET).digest('hex')
 } 
 
-type Payload = {
+export type Payload = {
   id: string,
   role: string,
 } 
 export const createSecretToken = (payload: Payload) => {
   return jwt.sign(payload, process.env.SECRET, {expiresIn: hour})
 }
-export const verifyToken = (id: string) => {
-  return jwt.sign({id}, process.env.SECRET, {expiresIn: hour})
+export const verifyToken = (token: string) => {
+  return jwt.verify(token, process.env.SECRET)
 }
 
 export const createRefreshSecretToken = (payload: Payload) => {
-  return jwt.sign(payload, process.env.SECRET, {expiresIn: day})
-}
-export const verifyRefreshToken = (id: string) => {
-  return jwt.sign({id}, process.env.SECRET, {expiresIn: day})
+  return jwt.sign(payload, process.env.SECRET_REFRESH_TOKEN, {expiresIn: day})
 }
